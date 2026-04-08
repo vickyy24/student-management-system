@@ -1,7 +1,7 @@
-import { Button, Card, CardBody, Col, Container, Form, FormCheck, FormControl, FormGroup, FormLabel, FormSelect, Nav, Navbar, NavbarBrand, NavLink, Row, Table, Toast, ToastBody } from "react-bootstrap";
+import { Button, Card, CardBody, Col, Container, Form, FormCheck, FormControl, FormGroup, FormLabel, FormSelect, Nav, Navbar, NavbarBrand, NavLink, Row, Table, Toast, ToastBody, ToastContainer } from "react-bootstrap";
 import logo from './logo.png';
 import { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const RegistrationForm = ()=>{
@@ -21,6 +21,7 @@ const RegistrationForm = ()=>{
     const [errors, setErrors] = useState({});
     const [serversideMsg,setServersidemsg] = useState("")
     const fileRef = useRef(null);
+    const navigate = useNavigate();
 
     const branchOptions = [{ id: 1, name: "Baramati" },{ id: 2, name: "Hadapsar" },{ id: 3, name: "Viman Nagar" }];
 
@@ -456,6 +457,12 @@ const RegistrationForm = ()=>{
 
                     // Errors
                     setErrors({});
+
+                    //after successfull submit redirect to login page
+                    setTimeout(() => {
+                        setServersidemsg("");
+                        navigate("/login-page");
+                    }, 3000);
                 }
                 setTimeout(() => {
                     setServersidemsg("");
@@ -477,7 +484,15 @@ const RegistrationForm = ()=>{
     };
     return(
         <div>
-            {/* <h4>Registration Form</h4> */}
+            <ToastContainer position="top-center" className="p-3" style={{ zIndex: 9999 }}>
+                {serversideMsg && (
+                    <Toast bg={serversideMsg.startsWith("S:") ? "success" : "danger"}>
+                        <ToastBody className="text-white text-center">
+                            {serversideMsg.substring(2)}
+                        </ToastBody>
+                    </Toast>
+                )}
+            </ToastContainer>
             <Navbar className="bg-body-secondary border-bottom border-2 shadow-sm mb-3">
                 <Container fluid>
                     <NavbarBrand>
@@ -510,7 +525,6 @@ const RegistrationForm = ()=>{
 
                                     {/* Profile Section */}
                                     <h6 className="text-danger mb-3">Student Profile Details</h6>
-                                   {serversideMsg&&<span><Toast  bg={serversideMsg.startsWith("S:") ? "success" : "danger"}><ToastBody className="text-white">{serversideMsg.substring(2)}</ToastBody></Toast></span>} 
                                     <Row className="mb-3">
                                         <Col md={4}>
                                             <FormGroup>
@@ -813,14 +827,15 @@ const RegistrationForm = ()=>{
                     </Col>
                     
                 </Row>
+                <div>
+                    <Row>
+                        <Col className="mt-3 bg-body-secondary border-top border-2 shadow-sm">
+                            <p>© 2026 - CoreIdentityExample - <Link to="privacy-policy" >Privacy</Link></p>
+                        </Col>
+                    </Row>
+                </div>
             </Container>
-            <div>
-            <Row>
-                <Col className="mt-3 bg-body-secondary border-top border-2 shadow-sm">
-                    <p>© 2026 - CoreIdentityExample - <Link to="privacy-policy" >Privacy</Link></p>
-                </Col>
-            </Row>
-            </div>
+            
         </div>
     )
 }
