@@ -10,77 +10,73 @@ const LoginComponent=()=>{
         password:""
     })
     const [errormsg,setErrorMessage]=useState({});
-    
+    const [serverMsg, setServerMsg] = useState("");
     const navigate = useNavigate();
 
     useEffect(() => {
-    axios.get("http://localhost:9000/verify", {
-        withCredentials: true
-    })
-    .then(res => {
-        if(res.status === 200){
-            navigate("/dashboard");
-        }
-    })
-    .catch(() => {
-        // stay on login
-    });
-}, []);
+        axios.get("http://localhost:9000/verify", {
+            withCredentials: true
+        })
+        .then(res => {
+            if(res.status === 200){
+                navigate("/dashboard");
+            }
+        })
+        .catch(() => {
+            // stay on login
+        });
+    }, [navigate]);
     const handleInput=(e)=>{
         setForminput({
             ...forminput,
             [e.target.name]:e.target.value
         })
+
+        //clearmessage while typing
+        setServerMsg("");
     }
     
-
     const Validate =()=>{
         let err = {};
         let Valid = true;
-        // const emailRegex = /^[a-zA-Z0-9]+([._%+-]?[a-zA-Z0-9]+)*@[a-zA-Z0-9-]+\.[a-zA-Z]{2,}$/;
-        // const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d@$!%*?&]{6,}$/;
 
         if(!forminput.emailaddress){
             err.emailError = "Enter Your Email Address";
             Valid=false;
         }
-        // else if(!emailRegex.test(forminput.emailaddress.trim())){
-        //     err.emailError = "Invalid Email Address"
-        //     Valid = false
-        // }
         if(!forminput.password){
             err.passwordError = "Enter Password";
             Valid=false
         }
-        // else if(!passwordRegex.test(forminput.password.trim())){
-        //     err.passwordError = "Invaild Password";
-        //     Valid=false
-        // }
         setErrorMessage(err)
         return Valid;
     }
 
     const Formsubmit = async (e) => {
-    e.preventDefault();
+        e.preventDefault();
 
-    if (Validate()) {
-        try {
-            const res = await axios({
-                method: "POST",
-                url: "http://localhost:9000/login",
-                data: forminput,
-                withCredentials: true
-            });
+        if (Validate()) {
+            try {
+                const res = await axios({
+                    method: "POST",
+                    url: "http://localhost:9000/login",
+                    data: forminput,
+                    withCredentials: true
+                });
 
-            if (res.status === 200) {
-                navigate("/dashboard");
+                if (res.status === 200) {
+                    navigate("/dashboard");
+                }
+
+            } catch (err) {
+                if (err.response) {
+                    setServerMsg(err.response.data.message);
+                } else {
+                    setServerMsg("Server error");
+                }
             }
-
-        } catch (err) {
-            console.log(err);
         }
-    }
-};
+    };
     
 
     return(
@@ -95,14 +91,18 @@ const LoginComponent=()=>{
 
                             <div className="mb-3">
                                 <label className="form-label">Email Address: <span style={{"color":"red"}}>{errormsg.emailError}</span></label>
-                                <input type="email" name="emailaddress" value={forminput.emailaddress} onChange={handleInput} className="form-control form-control-lg" placeholder="Enter your email address"/>
+                                <input type="text" name="emailaddress" value={forminput.emailaddress} onChange={handleInput} className="form-control form-control-lg" placeholder="Enter your email address"/>
                             </div>
 
-                            <div className="mb-3">
+                            <div className="mb-2">
                                 <label className="form-label">Password: <span style={{"color":"red"}}>{errormsg.passwordError}</span></label>
                                 <input type="password" name="password" value={forminput.password} onChange={handleInput} className="form-control form-control-lg" placeholder="Enter your password"/>
                             </div>
-
+                            {serverMsg && (
+                                <div style={{ color: "#ed4956", fontSize: "14px"}}>
+                                    {serverMsg}
+                                </div>
+                            )}
                             <div className="mb-4 d-flex justify-content-between align-items-center">
                                 <div className="form-check">
                                     <label className="form-check-label">

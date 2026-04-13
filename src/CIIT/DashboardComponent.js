@@ -5,11 +5,13 @@ import { useNavigate } from "react-router-dom";
 const Dashboard=()=>{
     const navigate = useNavigate();
     useEffect(() => {
-    axios.get("http://localhost:9000/verify", {
-        withCredentials: true
-    })
-    .catch(() => navigate("/login-page"));
-}, []);
+        axios.get("http://localhost:9000/verify", {
+            withCredentials: true
+        })
+        .catch(() =>
+            navigate("/login-page")
+        );
+    }, [navigate]);
     return(
         <div>
             <h4>Dashboard Component</h4>
