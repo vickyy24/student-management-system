@@ -1,6 +1,7 @@
-import { useState,useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import logo from './logo.png';
+import axios from "axios";
 
 const LoginComponent=()=>{
 
@@ -12,63 +13,74 @@ const LoginComponent=()=>{
     
     const navigate = useNavigate();
 
+    useEffect(() => {
+    axios.get("http://localhost:9000/verify", {
+        withCredentials: true
+    })
+    .then(res => {
+        if(res.status === 200){
+            navigate("/dashboard");
+        }
+    })
+    .catch(() => {
+        // stay on login
+    });
+}, []);
     const handleInput=(e)=>{
         setForminput({
             ...forminput,
             [e.target.name]:e.target.value
         })
     }
-    useEffect(function(){
-        if(localStorage.getItem("user_name")!=null && localStorage.getItem("upassword")!=null){
-            navigate("/dashboard");
-        }
-    },[navigate])
+    
 
     const Validate =()=>{
         let err = {};
         let Valid = true;
-        const emailRegex = /^[a-zA-Z0-9]+([._%+-]?[a-zA-Z0-9]+)*@[a-zA-Z0-9-]+\.[a-zA-Z]{2,}$/;
-        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d@$!%*?&]{6,}$/;
+        // const emailRegex = /^[a-zA-Z0-9]+([._%+-]?[a-zA-Z0-9]+)*@[a-zA-Z0-9-]+\.[a-zA-Z]{2,}$/;
+        // const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d@$!%*?&]{6,}$/;
 
         if(!forminput.emailaddress){
             err.emailError = "Enter Your Email Address";
             Valid=false;
         }
-        else if(!emailRegex.test(forminput.emailaddress.trim())){
-            err.emailError = "Invalid Email Address"
-            Valid = false
-        }
+        // else if(!emailRegex.test(forminput.emailaddress.trim())){
+        //     err.emailError = "Invalid Email Address"
+        //     Valid = false
+        // }
         if(!forminput.password){
             err.passwordError = "Enter Password";
             Valid=false
         }
-        else if(!passwordRegex.test(forminput.password.trim())){
-            err.passwordError = "Invaild Password";
-            Valid=false
-        }
+        // else if(!passwordRegex.test(forminput.password.trim())){
+        //     err.passwordError = "Invaild Password";
+        //     Valid=false
+        // }
         setErrorMessage(err)
         return Valid;
     }
 
-    const Formsubmit=()=>{
-        // e.preventDeafault();
-        // if(Validate()){
+    const Formsubmit = async (e) => {
+    e.preventDefault();
 
-        // }
-        // var uname=txtuser.current.value;
-        // var pass=txtpass.current.value;
-        // if(uname=="ciit@gmail.com" && pass=="1234"){  
-        //     localStorage.setItem("user_name",uname); 
-        //     localStorage.setItem("upassword",pass);
-        //     // navigate("/StudentDashboard")
-        // }
-        // else{
-        //     setErrorMessage("Invalid user name or password");
-        // }
-        if(Validate()){
+    if (Validate()) {
+        try {
+            const res = await axios({
+                method: "POST",
+                url: "http://localhost:9000/login",
+                data: forminput,
+                withCredentials: true
+            });
 
+            if (res.status === 200) {
+                navigate("/dashboard");
+            }
+
+        } catch (err) {
+            console.log(err);
         }
     }
+};
     
 
     return(
@@ -102,7 +114,7 @@ const LoginComponent=()=>{
                             </div>
 
                             <div>
-                                <input type="button" className="btn btn-primary btn-lg px-5" value="Login"/>
+                                <input type="submit" className="btn btn-primary btn-lg px-5" value="Login"/>
                                 <p className="mt-2" style={{ fontWeight: 700 }}>
                                     Don't have an account? <Link to="/student-registration" className="link-danger">Register as a Guest</Link>
                                 </p>
