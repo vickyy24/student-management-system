@@ -30,13 +30,7 @@ const Dashboard = () => {
 
                         {/* PROFILE */}
                         <div className="bg-light rounded text-center p-3 mb-3">
-                            <Image
-                                src=""
-                                roundedCircle
-                                width={70}
-                                height={70}
-                                alt="profileimg"
-                            />
+                            <Image src={null} roundedCircle width={70} height={70} alt="profileimg"/>
                             <h6 className="mt-2 mb-0">Vikas Sontakke</h6>
                         </div>
 
@@ -68,10 +62,7 @@ const Dashboard = () => {
 
                             <Nav className="ms-auto">
                                 <Nav.Link className="text-white">Hi</Nav.Link>
-                                <Nav.Link
-                                    className="text-white"
-                                    onClick={LogoutButton}
-                                >
+                                <Nav.Link className="text-white" onClick={LogoutButton}>
                                     Logout
                                 </Nav.Link>
                             </Nav>
@@ -80,7 +71,7 @@ const Dashboard = () => {
                     </Navbar>
 
                     {/* MAIN CONTENT AREA */}
-                    <div style={{ padding: "20px" }}>
+                    <div style={{padding:"10px"}}>
                         <Outlet/>
                     </div>
 
