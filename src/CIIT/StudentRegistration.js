@@ -365,119 +365,133 @@ const RegistrationForm = ()=>{
                 qualificationlist: ""
             });
         }
-        
-
     }
     const handleSubmit = async(e) => {
         e.preventDefault();
         if(Validate()){
-            // console.log("Form submitted");
-            const studentdata = new FormData();
-            
-            //Profiledata
-            studentdata.append("branch",profileData.branch_name);
-            studentdata.append("registrationdate",profileData.registration_date);
-            studentdata.append("firstname",profileData.first_name);
-            studentdata.append("lastname",profileData.last_name);
-            studentdata.append("gender",profileData.gender);
-            studentdata.append("birthdate",profileData.birth_date);
-            studentdata.append("emailaddress",profileData.email_address);
-            studentdata.append("mobilenumber", profileData.mobile_number);
-            studentdata.append("whatsappnumber",profileData.whatsapp_number);
-            studentdata.append("parentname",profileData.parent_name);
-            studentdata.append("parentnumber",profileData.parent_number);
-            studentdata.append("aadharnumber",profileData.aadhar_number);
-            studentdata.append("aadharimage",profileData.aadhar_image);
-            studentdata.append("localaddress",profileData.local_address);
-            studentdata.append("permanentaddress",profileData.permanent_address);
-            studentdata.append("qualificationList",JSON.stringify(qualificationList))
-            //Registrationdata
-            studentdata.append("coursename",registrationData.course);
-            studentdata.append("feeamount",registrationData.fee_amount);
-            studentdata.append("gst",registrationData.gst);
-            studentdata.append("totalfee",registrationData.total_fee);
-            studentdata.append("discount",registrationData.discount);
-            studentdata.append("finalfee",registrationData.final_fee)
-            //Paymentdata
-            studentdata.append("paymentdate",paymentData.payment_date);
-            studentdata.append("paymentamount",paymentData.payment_amount);
-            studentdata.append("paymentmode",paymentData.payment_mode);
-            studentdata.append("paymentdescription",paymentData.payment_description);
 
-            try{
-                const res = await axios({
-                    method:"POST",
-                    url:"http://localhost:9000/register",
-                    data:studentdata
-                })
-                if (res.status === 200) {
-                    setServersidemsg("S:" + res.data.message);
+            const userData = {
+                emailaddress: profileData.email_address,
+                mobilenumber: profileData.mobile_number
+            };
+            try {
+                const checkUser = await axios({
+                    method: "POST",
+                    url: "http://localhost:9000/check-user",
+                    data: userData
+                });
 
-                    // clear file input
-                    fileRef.current.value = "";
-                    // Profile
-                    setProfiledata({
-                        branch_name: "",
-                        registration_date: "",
-                        first_name: "",
-                        last_name: "",
-                        gender: "",
-                        birth_date: "",
-                        email_address: "",
-                        mobile_number: "",
-                        whatsapp_number: "",
-                        parent_name: "",
-                        parent_number: "",
-                        aadhar_number: "",
-                        // aadhar_image: "",
-                        local_address: "",
-                        permanent_address: ""
-                    });
+                if (checkUser.status === 200) {
 
-                    //clear table
-                    setQualificationList([]);
+                    const studentdata = new FormData();
+                    //Profiledata
+                    studentdata.append("branch",profileData.branch_name);
+                    studentdata.append("registrationdate",profileData.registration_date);
+                    studentdata.append("firstname",profileData.first_name);
+                    studentdata.append("lastname",profileData.last_name);
+                    studentdata.append("gender",profileData.gender);
+                    studentdata.append("birthdate",profileData.birth_date);
+                    studentdata.append("emailaddress",profileData.email_address);
+                    studentdata.append("mobilenumber", profileData.mobile_number);
+                    studentdata.append("whatsappnumber",profileData.whatsapp_number);
+                    studentdata.append("parentname",profileData.parent_name);
+                    studentdata.append("parentnumber",profileData.parent_number);
+                    studentdata.append("aadharnumber",profileData.aadhar_number);
+                    studentdata.append("aadharimage",profileData.aadhar_image);
+                    studentdata.append("localaddress",profileData.local_address);
+                    studentdata.append("permanentaddress",profileData.permanent_address);
+                    studentdata.append("qualificationList",JSON.stringify(qualificationList))
+                    //Registrationdata
+                    studentdata.append("coursename",registrationData.course);
+                    studentdata.append("feeamount",registrationData.fee_amount);
+                    studentdata.append("gst",registrationData.gst);
+                    studentdata.append("totalfee",registrationData.total_fee);
+                    studentdata.append("discount",registrationData.discount);
+                    studentdata.append("finalfee",registrationData.final_fee)
+                    //Paymentdata
+                    studentdata.append("paymentdate",paymentData.payment_date);
+                    studentdata.append("paymentamount",paymentData.payment_amount);
+                    studentdata.append("paymentmode",paymentData.payment_mode);
+                    studentdata.append("paymentdescription",paymentData.payment_description);
 
-                    // Registration
-                    setRegistrationdata({
-                        course: "",
-                        fee_amount: "",
-                        gst: "",
-                        total_fee: "",
-                        discount: "",
-                        final_fee: ""
-                    });
+                    try{
+                        const res = await axios({
+                            method:"POST",
+                            url:"http://localhost:9000/register",
+                            data:studentdata
+                        })
+                        if (res.status === 200) {
+                            setServersidemsg("S:" + res.data.message);
 
-                    // Payment
-                    setPaymentdata({
-                        payment_date: "",
-                        payment_amount: "",
-                        payment_mode: "",
-                        payment_description: ""
-                    });
+                            // clear file input
+                            fileRef.current.value = "";
+                            // Profile
+                            setProfiledata({
+                                branch_name: "",registration_date: "",first_name: "",
+                                last_name: "",gender: "",birth_date: "",email_address: "",
+                                mobile_number: "",whatsapp_number: "",parent_name: "",
+                                parent_number: "",aadhar_number: "",// aadhar_image: "",
+                                local_address: "",permanent_address: ""
+                            });
 
-                    // Errors
-                    setErrors({});
+                            //clear table
+                            setQualificationList([]);
 
-                    //after successfull submit redirect to login page
-                    setTimeout(() => {
-                        setServersidemsg("");
-                        navigate("/login-page");
-                    }, 3000);
+                            // Registration
+                            setRegistrationdata({
+                                course: "",
+                                fee_amount: "",
+                                gst: "",
+                                total_fee: "",
+                                discount: "",
+                                final_fee: ""
+                            });
+
+                            // Payment
+                            setPaymentdata({
+                                payment_date: "",
+                                payment_amount: "",
+                                payment_mode: "",
+                                payment_description: ""
+                            });
+
+                            // Errors
+                            setErrors({});
+
+                            //after successfull submit redirect to login page
+                            setTimeout(() => {
+                                setServersidemsg("");
+                                navigate("/login-page");
+                            }, 3000);
+                        }
+                        setTimeout(() => {
+                            setServersidemsg("");
+                        }, 3000);
+                    
+                    }catch(err){
+                        if (err.response.status === 500) {
+                            setServersidemsg("E:" + err.response.data.message);
+                        } else {
+                            setServersidemsg("E:Something went wrong");
+                        }
+                        setTimeout(()=>{
+                            setServersidemsg("")
+                        },3000)
+                    }
                 }
-                setTimeout(() => {
-                    setServersidemsg("");
-                }, 3000);
-            
-            }catch(err){
-                if (err.response.status === 500) {
-                    setServersidemsg("E:" + err.response.data.message);
+
+            } catch (err) {
+                if (err.response) {
+                    setServersidemsg(err.response.data.message);
+                    setErrors({
+                        ...errors,
+                        email_address: err.response.data.message
+                    });
                 } else {
-                    setServersidemsg("E:Something went wrong");
+                    setServersidemsg("Server error");
                 }
-                setTimeout(()=>{
-                    setServersidemsg("")
-                },3000)
             }
+            
             
         }
         
@@ -581,7 +595,7 @@ const RegistrationForm = ()=>{
                                         <Col md={3}>
                                             <FormGroup>
                                                 <FormLabel>Email:</FormLabel>
-                                                <FormControl type="email" name="email_address" value={profileData.email_address} onChange={handleProfileChange} isInvalid={!!errors.email_address}/>
+                                                <FormControl type="text" name="email_address" value={profileData.email_address} onChange={handleProfileChange} isInvalid={!!errors.email_address}/>
                                                 <Form.Control.Feedback type="invalid">{errors.email_address}</Form.Control.Feedback>
                                             </FormGroup>
                                         </Col>

@@ -26,6 +26,7 @@ const LoginComponent=()=>{
             // stay on login
         });
     }, [navigate]);
+    
     const handleInput=(e)=>{
         setForminput({
             ...forminput,

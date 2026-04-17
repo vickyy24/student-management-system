@@ -4,10 +4,6 @@ import { Col, Container, Row, Table } from "react-bootstrap";
 
 const DashboardHome = () => {
     const [showdata, setShowdata] = useState([])
-    const cellStyle = {
-        background: "linear-gradient(135deg, #E3F2FD, #BBDEFB)",
-        color: "#000"
-    };
 
     const fetchApi=async()=>{
         try{
@@ -24,14 +20,35 @@ const DashboardHome = () => {
             }
         }
     }
+
     useEffect(()=>{
         fetchApi();
     },[])
+
+    const cellStyle = {
+        background: "linear-gradient(135deg, #E3F2FD, #BBDEFB)",
+        color: "#000"
+    };
+    
     //Total Paid till date
-    const feespaid = showdata.reduce(
-        (acc, curr) => acc + Number(curr.PaymentAmount),
-        0
-    );
+    const feespaid = showdata.reduce((acc, curr) => acc + Number(curr.PaymentAmount),0);
+
+    //fees status
+    const getStatus = () => {
+        let status = "";
+
+        if (feespaid === 0) {
+            status = "Unpaid";
+        }
+        else if (feespaid > 0 && feespaid < Math.floor(showdata[0].FinalFee)) {
+            status = "Partial Paid";
+        }
+        else if (feespaid === Math.floor(showdata[0].FinalFee)) {
+            status = "Paid";
+        }
+
+        return status;
+    };
     return (
         <div>
             {/* <h4>Dashboard Content</h4> */}
@@ -60,7 +77,7 @@ const DashboardHome = () => {
                                             <td style={cellStyle}><b>Fees Remaining:</b> {Math.floor(row.FinalFee) - feespaid}</td>
                                         </tr>
                                         <tr>
-                                            <td style={cellStyle}><b>Fees Status:</b></td>
+                                            <td style={cellStyle}><b>Fees Status:</b> {getStatus()}</td>
                                             <td style={cellStyle}></td>
                                         </tr>
                                     </tbody>
