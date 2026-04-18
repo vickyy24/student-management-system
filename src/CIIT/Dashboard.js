@@ -1,9 +1,11 @@
 import axios from "axios";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Container, Row, Col, Navbar, Nav, Image} from "react-bootstrap";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
+
+    const [username, setUsername] = useState("");
 
     const navigate = useNavigate();
 
@@ -14,8 +16,31 @@ const Dashboard = () => {
         .catch(() => navigate("/login-page"));
     }, [navigate]);
 
-    const LogoutButton = () => {
-        navigate("/login-page");
+    useEffect(() => {
+        axios.get("http://localhost:9000/dashboard-details", {
+            withCredentials: true
+        })
+        .then((res) => {
+            if (res.data.length > 0) {
+                setUsername(res.data[0]);
+            }
+        })
+        .catch((err) =>{
+            if(err){
+                console.log(err)
+            }
+        });
+    }, []);
+    const LogoutButton = async () => {
+        try {
+            await axios.get("http://localhost:9000/logout", {
+                withCredentials: true
+            });
+
+            navigate("/login-page");
+        } catch (err) {
+            console.log(err);
+        }
     };
 
     return (
@@ -31,7 +56,7 @@ const Dashboard = () => {
                         {/* PROFILE */}
                         <div className="bg-light rounded text-center p-3 mb-3">
                             <Image src={null} roundedCircle width={70} height={70} alt="profileimg"/>
-                            <h6 className="mt-2 mb-0">Vikas Sontakke</h6>
+                            <h6 className="mt-2 mb-0">{username.FullName}</h6>
                         </div>
 
                         {/* MENU */}
@@ -57,11 +82,11 @@ const Dashboard = () => {
                         <Container fluid>
 
                             <Navbar.Brand>
-                                Vikas Sontakke
+                                {username.FullName}
                             </Navbar.Brand>
 
                             <Nav className="ms-auto">
-                                <Nav.Link className="text-white">Hi</Nav.Link>
+                                <Nav.Link className="text-white">Hi {username.FirstName}</Nav.Link>
                                 <Nav.Link className="text-white" onClick={LogoutButton}>
                                     Logout
                                 </Nav.Link>
