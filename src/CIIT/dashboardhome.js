@@ -49,6 +49,14 @@ const DashboardHome = () => {
 
         return status;
     };
+
+    let studentStatus = "";
+
+    if (feespaid > 0) {
+        studentStatus = "Valid";
+    } else {
+        studentStatus = "Invalid";
+    }
     return (
         <div>
             {/* <h4>Dashboard Content</h4> */}
@@ -70,7 +78,7 @@ const DashboardHome = () => {
                                         </tr>
                                         <tr>
                                             <td style={cellStyle}><b>Final Fees:</b> {Math.floor(row.FinalFee)}</td>
-                                            <td style={cellStyle}><b>Student Status:</b></td>
+                                            <td style={cellStyle}><b>Student Status:</b> {studentStatus}</td>
                                         </tr>
                                         <tr>
                                             <td style={cellStyle}><b>Fees Paid: </b>{feespaid}</td>

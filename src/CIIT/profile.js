@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Button, Col, Container, Form, FormCheck, FormControl, FormGroup, FormLabel, Row } from "react-bootstrap";
+import { Button, Col, Container, Form, FormCheck, FormControl, FormGroup, FormLabel, Row, Alert } from "react-bootstrap";
 
 const Profile=()=>{
     const [formData, setFormData] = useState({ 
@@ -9,6 +9,7 @@ const Profile=()=>{
     });
     const [qualificationList, setQualificationList] = useState([]);
     const [msg, setMsg] = useState("");
+
     const handleChange= (e)=>{
         const {name,value} = e.target;
         setFormData({
@@ -66,7 +67,7 @@ const Profile=()=>{
 
             setMsg(res.data.message);
 
-            // remove after 3 sec
+            // remove after few sec
             setTimeout(() => {
                 setMsg("");
             }, 3000);
@@ -82,9 +83,15 @@ const Profile=()=>{
     };
     return(
         <div>
-            <Container className="bg-light shadow p-4">
+
+            <Container className="bg-light shadow p-4 position-relative">
+                {msg && (
+                    <Alert variant="warning" style={{position: "absolute", top: "-10px", padding: "5px 8px",left: "50%",
+                            transform: "translateX(-50%)"}} className="text-center">
+                        {msg}
+                    </Alert>
+                )}
                 <h5 className="text-center">Profile Details</h5>
-                
                 <Form onSubmit={handleUpdate}>
                     <Row className="mb-2">
                         <Col>

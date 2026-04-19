@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Container, Row, Col, Navbar, Nav, Image, NavItem, NavLink, Button} from "react-bootstrap";
+import { Container, Row, Col, Navbar, Nav, Image, NavItem, Button} from "react-bootstrap";
+import { NavLink } from "react-router-dom";
 import { Outlet, useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
