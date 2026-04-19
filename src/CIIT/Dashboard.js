@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Container, Row, Col, Navbar, Nav, Image} from "react-bootstrap";
-import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import { Container, Row, Col, Navbar, Nav, Image, NavItem, NavLink, Button} from "react-bootstrap";
+import { Outlet, useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
 
@@ -85,11 +85,11 @@ const Dashboard = () => {
                                 {username.FullName}
                             </Navbar.Brand>
 
-                            <Nav className="ms-auto">
-                                <Nav.Link className="text-white">Hi {username.FirstName}</Nav.Link>
-                                <Nav.Link className="text-white" onClick={LogoutButton}>
+                            <Nav className="ms-auto align-items-center">
+                                <NavItem className="text-white me-4">Hi {username.FirstName}</NavItem>
+                                <Button  variant="light" size="sm" className="fw-semibold" onClick={LogoutButton}>
                                     Logout
-                                </Nav.Link>
+                                </Button>
                             </Nav>
 
                         </Container>
