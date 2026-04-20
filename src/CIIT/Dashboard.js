@@ -3,10 +3,14 @@ import { useEffect, useState } from "react";
 import { Container, Row, Col, Navbar, Nav, Image, NavItem, Button} from "react-bootstrap";
 import { NavLink } from "react-router-dom";
 import { Outlet, useNavigate } from "react-router-dom";
-
+// import logo from './logo.png'
 const Dashboard = () => {
 
-    const [username, setUsername] = useState("");
+    const [username, setUsername] = useState({
+        CourseName: "",
+        FullName: "",
+        FirstName: ""
+    });
 
     const navigate = useNavigate();
 
@@ -22,6 +26,7 @@ const Dashboard = () => {
             withCredentials: true
         })
         .then((res) => {
+            console.log(res.data[0]);
             if (res.data.length > 0) {
                 setUsername(res.data[0]);
             }
@@ -55,9 +60,19 @@ const Dashboard = () => {
                     <div className="p-3">
 
                         {/* PROFILE */}
-                        <div className="bg-light rounded text-center p-3 mb-3">
-                            <Image src={null} roundedCircle width={70} height={70} alt="profileimg"/>
+                        <div className="bg-light rounded text-center p-2  mb-2" >
+                            <Image src={null} roundedCircle width={70} height={70} alt="admin" className="d-block mx-auto"/>
                             <h6 className="mt-2 mb-0">{username.FullName}</h6>
+                            <div style={{ fontSize: "13px" }}>{username.CourseName.split("(")[0]}</div>
+
+                            <div className="d-flex justify-content-center gap-2 mt-2 mb-2">
+                                <Button size="sm" variant="warning" style={{fontSize: "11px"}}>
+                                    Change Password
+                                </Button>
+                                <Button size="sm"  variant="warning" style={{fontSize: "11px"}}>
+                                    Change Photo
+                                </Button>
+                            </div>
                         </div>
 
                         {/* MENU */}
