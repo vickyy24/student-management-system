@@ -1,9 +1,9 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Container, Row, Col, Navbar, Nav, Image, NavItem, Button} from "react-bootstrap";
+import { Container, Row, Col, Navbar, Nav, Image, NavItem, Button, Modal, ModalTitle, ModalBody, ModalFooter, Form, ModalHeader} from "react-bootstrap";
 import { NavLink } from "react-router-dom";
 import { Outlet, useNavigate } from "react-router-dom";
-// import logo from './logo.png'
+import img from './profile_img.jpg'
 const Dashboard = () => {
 
     const [username, setUsername] = useState({
@@ -11,6 +11,13 @@ const Dashboard = () => {
         FullName: "",
         FirstName: ""
     });
+    const [showModal, setShowModal] = useState(false);
+    const [passwordData, setPasswordData] = useState({
+        oldPassword: "",
+        newPassword: "",
+        confirmPassword: ""
+    });
+    const [msg, setMsg] = useState("");
 
     const navigate = useNavigate();
 
@@ -48,6 +55,70 @@ const Dashboard = () => {
             console.log(err);
         }
     };
+    const passwordChangeModal = () => {
+        setShowModal(true);
+    };
+    const closeModal = () => {
+        setShowModal(false);
+        setMsg("");   // clear message
+        //clear form fields
+        setPasswordData({
+            oldPassword: "",
+            newPassword: "",
+            confirmPassword: ""
+        });
+    };
+    const handlePasswordChange = (e) => {
+        setMsg("");   // remove old error while typing
+        const name = e.target.name;
+        const value = e.target.value;
+
+        setPasswordData({
+            ...passwordData,
+            [name]: value
+        });
+    };
+
+    const handlePasswordSubmit = async (e) => {
+        e.preventDefault();
+
+        if (passwordData.oldPassword === "" || passwordData.newPassword === "" || passwordData.confirmPassword === "") {
+            setMsg("All fields are required");
+            return;
+        }
+
+        if (passwordData.newPassword !== passwordData.confirmPassword) {
+            setMsg("Passwords do not match");
+            return;
+        }
+
+        try {
+            const res = await axios.post(
+                "http://localhost:9000/change-password",
+                {
+                    oldPassword: passwordData.oldPassword,
+                    newPassword: passwordData.newPassword
+                },
+                { withCredentials: true }
+            );
+
+            setMsg(res.data.message);
+
+            // closeModal();
+
+            setPasswordData({
+                oldPassword: "",
+                newPassword: "",
+                confirmPassword: ""
+            });
+
+        } catch (err) {
+            setMsg(err.response.data.message);
+        }
+    };
+    const photoChange=()=>{
+
+    }
 
     return (
         <Container fluid className="p-0">
@@ -61,15 +132,51 @@ const Dashboard = () => {
 
                         {/* PROFILE */}
                         <div className="bg-light rounded text-center p-2  mb-2" >
-                            <Image src={null} roundedCircle width={70} height={70} alt="admin" className="d-block mx-auto"/>
+                            <Image src={img} roundedCircle width={70} height={70} alt="admin" className="d-block mx-auto"/>
                             <h6 className="mt-2 mb-0">{username.FullName}</h6>
                             <div style={{ fontSize: "13px" }}>{username.CourseName.split("(")[0]}</div>
 
                             <div className="d-flex justify-content-center gap-2 mt-2 mb-2">
-                                <Button size="sm" variant="warning" style={{fontSize: "11px"}}>
-                                    Change Password
-                                </Button>
-                                <Button size="sm"  variant="warning" style={{fontSize: "11px"}}>
+                                <div>
+                                    <Button size="sm" variant="warning" style={{fontSize: "11px"}} onClick={passwordChangeModal}>
+                                        Change Password
+                                    </Button>
+                                    <Modal show={showModal} onHide={closeModal} backdrop="static">
+                                        <ModalHeader closeButton>
+                                            <ModalTitle>Change Password</ModalTitle>
+                                        </ModalHeader>
+                                        <Form onSubmit={handlePasswordSubmit}>
+                                            <ModalBody>
+                                                {msg && <p style={{ color: "red" }}>{msg}</p>}
+                                                    <Form.Group className="mb-2">
+                                                        <Form.Label>Old Password</Form.Label>
+                                                        <Form.Control type="password" name="oldPassword" value={passwordData.oldPassword} onChange={handlePasswordChange}/>
+                                                    </Form.Group>
+
+                                                    <Form.Group className="mb-2">
+                                                        <Form.Label>New Password</Form.Label>
+                                                        <Form.Control type="password" name="newPassword"  value={passwordData.newPassword}  onChange={handlePasswordChange}/>
+                                                    </Form.Group>
+
+                                                    <Form.Group>
+                                                        <Form.Label>Confirm Password</Form.Label>
+                                                        <Form.Control type="password" name="confirmPassword" value={passwordData.confirmPassword} onChange={handlePasswordChange}/>
+                                                    </Form.Group>
+                                            </ModalBody>
+                                            <ModalFooter>
+                                                <Button variant="secondary" onClick={closeModal}>
+                                                    Cancel
+                                                </Button>
+                                                <Button variant="primary" type="submit">
+                                                    Update
+                                                </Button>
+                                            </ModalFooter>
+                                        </Form>
+                                        
+                                    </Modal>
+                                </div>
+                                
+                                <Button size="sm"  variant="warning" style={{fontSize: "11px"}} onClick={photoChange}>
                                     Change Photo
                                 </Button>
                             </div>
