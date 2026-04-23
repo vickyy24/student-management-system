@@ -1,15 +1,16 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
-import { Container, Row, Col, Navbar, Nav, Image, NavItem, Button, Modal, ModalTitle, ModalBody, ModalFooter, Form, ModalHeader} from "react-bootstrap";
+import { useEffect, useRef, useState } from "react";
+import { Container, Row, Col, Navbar, Nav, Image, NavItem, Button, Modal, ModalTitle, ModalBody, ModalFooter, Form, ModalHeader, FormControl, FormGroup} from "react-bootstrap";
 import { NavLink } from "react-router-dom";
 import { Outlet, useNavigate } from "react-router-dom";
-import img from './profile_img.jpg'
+
 const Dashboard = () => {
 
     const [username, setUsername] = useState({
         CourseName: "",
         FullName: "",
-        FirstName: ""
+        FirstName: "",
+        Profile_Image:""
     });
     const [showModal, setShowModal] = useState(false);
     const [passwordData, setPasswordData] = useState({
@@ -17,6 +18,16 @@ const Dashboard = () => {
         newPassword: "",
         confirmPassword: ""
     });
+    const [showImageModal, setShowImageModal] = useState(false);
+
+    const [imagefile, setImageFile] = useState({
+        profileimage: null
+    }); //Image upload state
+
+    const fileInputRef = useRef ()
+    ;
+    const [imageMsg,setImageMsg] = useState("") // Image Update Message
+
     const [msg, setMsg] = useState("");
 
     const navigate = useNavigate();
@@ -103,9 +114,6 @@ const Dashboard = () => {
             );
 
             setMsg(res.data.message);
-
-            // closeModal();
-
             setPasswordData({
                 oldPassword: "",
                 newPassword: "",
@@ -116,10 +124,56 @@ const Dashboard = () => {
             setMsg(err.response.data.message);
         }
     };
-    const photoChange=()=>{
+    const photoChangeModal=()=>{
+        setShowImageModal(true);
+    }
+    const closeImageModal = () => {
+        setShowImageModal(false);
+        setImageMsg("");
+        setImageFile({
+            profileimage: null
+        });
+        //CLEARS FILE INPUT
+        if (fileInputRef.current) {
+            fileInputRef.current.value = "";
+        }
+    };
+
+    const handleImageChange=(e)=>{
+        setImageMsg("");
+        setImageFile({
+            profileimage: e.target.files[0]
+        });
+    }
+    const handleImageSubmit= async(e)=>{
+        e.preventDefault();
+        if(!imagefile.profileimage){
+            setImageMsg("Selecct the image")
+            return;
+        }
+
+        const imagedata = new FormData();
+        imagedata.append("profile_image", imagefile.profileimage)
+        try{
+           const res = await axios({
+                url:"http://localhost:9000/update-image",
+                method:"post",
+                data:imagedata,
+                withCredentials:true
+            })
+            setImageMsg(res.data.message);
+            fileInputRef.current.value = "";
+            setImageFile({
+                profileimage: null
+            });
+            setTimeout(() => {
+                setImageMsg("");
+            }, 3000);
+        }catch(err){
+            setImageMsg("Error uploading image");
+        }
 
     }
-
     return (
         <Container fluid className="p-0">
 
@@ -132,7 +186,7 @@ const Dashboard = () => {
 
                         {/* PROFILE */}
                         <div className="bg-light rounded text-center p-2  mb-2" >
-                            <Image src={img} roundedCircle width={70} height={70} alt="admin" className="d-block mx-auto"/>
+                            <Image src={`http://localhost:9000/profile-image/${username.Profile_Image}`} roundedCircle width={70} height={70} alt="admin" className="d-block mx-auto"/>
                             <h6 className="mt-2 mb-0">{username.FullName}</h6>
                             <div style={{ fontSize: "13px" }}>{username.CourseName.split("(")[0]}</div>
 
@@ -164,7 +218,7 @@ const Dashboard = () => {
                                                     </Form.Group>
                                             </ModalBody>
                                             <ModalFooter>
-                                                <Button variant="secondary" onClick={closeModal}>
+                                                <Button variant="danger" onClick={closeModal}>
                                                     Cancel
                                                 </Button>
                                                 <Button variant="primary" type="submit">
@@ -175,10 +229,35 @@ const Dashboard = () => {
                                         
                                     </Modal>
                                 </div>
+                                <div>
+                                    <Button size="sm"  variant="warning" style={{fontSize: "11px"}} onClick={photoChangeModal}>
+                                        Change Photo
+                                    </Button>
+                                    <Modal onHide={closeImageModal} show={showImageModal} backdrop="static">
+                                        <ModalHeader closeButton>
+                                            <ModalTitle>Change Photo</ModalTitle>
+                                        </ModalHeader>
+                                        <Form onSubmit={handleImageSubmit}>
+                                            
+                                            <ModalBody>
+                                                {imageMsg && <p style={{ color: "red" }}>{imageMsg}</p>}
+                                                <FormGroup>
+                                                    <FormControl type="file" ref={fileInputRef} name="profileimage"  onChange={handleImageChange}/>
+                                                </FormGroup>
+                                            </ModalBody>
+                                            <ModalFooter>
+                                                <Button variant="danger" onClick={closeImageModal}>
+                                                    Cancel
+                                                </Button>
+                                                <Button variant="primary" type="submit">
+                                                    Update
+                                                </Button>
+                                            </ModalFooter>
+                                            
+                                        </Form>
+                                    </Modal>
+                                </div>
                                 
-                                <Button size="sm"  variant="warning" style={{fontSize: "11px"}} onClick={photoChange}>
-                                    Change Photo
-                                </Button>
                             </div>
                         </div>
 
