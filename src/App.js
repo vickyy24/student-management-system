@@ -26,11 +26,12 @@ const MainComponent=()=>{
                         <Route path="batches" element={<Batches />} />
                         <Route path="payments" element={<Payment />} />
                         <Route path="practice-exams" element={<PracticeExams />} />
+
                         <Route path="video-tutorial" element={<Videotut />} />
 
                     </Route>
                     <Route path="/student-registration" element={<RegistrationForm/>}>
-                    <Route path="privacy-policy" element={<Privacy/>}/>
+                        <Route path="privacy-policy" element={<Privacy/>}/>
                     </Route>
                 </Routes>
             </BrowserRouter>

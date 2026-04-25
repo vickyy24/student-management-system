@@ -119,7 +119,9 @@ const Dashboard = () => {
                 newPassword: "",
                 confirmPassword: ""
             });
-
+            setTimeout(() => {
+                setMsg("");
+            }, 3000);
         } catch (err) {
             setMsg(err.response.data.message);
         }
@@ -148,32 +150,40 @@ const Dashboard = () => {
     const handleImageSubmit= async(e)=>{
         e.preventDefault();
         if(!imagefile.profileimage){
-            setImageMsg("Selecct the image")
+            setImageMsg("Select the image")
             return;
         }
 
         const imagedata = new FormData();
         imagedata.append("profile_image", imagefile.profileimage)
         try{
-           const res = await axios({
+           const imgdata = await axios({
                 url:"http://localhost:9000/update-image",
                 method:"post",
                 data:imagedata,
                 withCredentials:true
             })
-            setImageMsg(res.data.message);
-            fileInputRef.current.value = "";
+            setImageMsg(imgdata.data.message);
+
+            //update imgage immediately without page refresh
+            setUsername((prev) => ({
+                ...prev,
+                Profile_Image: imgdata.data.file
+            }));
+            fileInputRef.current.value = ""; // clear file input field
             setImageFile({
                 profileimage: null
             });
             setTimeout(() => {
                 setImageMsg("");
             }, 3000);
+           
         }catch(err){
             setImageMsg("Error uploading image");
         }
 
     }
+    
     return (
         <Container fluid className="p-0">
 
