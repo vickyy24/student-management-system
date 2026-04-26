@@ -81,7 +81,7 @@ const Videotut=()=>{
 
                 {/* left side MOdulelist */}
                 <Col md={2} >
-                    <ListGroup>
+                    <ListGroup className="text-center">
                         {modules.map( (m)=>(
                             <ListGroupItem key={m.module_id} action value={m.module_id} onClick={handleModuleClick}>
                                 {m.module_name}

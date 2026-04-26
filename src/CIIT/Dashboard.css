@@ -1,0 +1,27 @@
+.sidebar {
+  border-radius: 12px;
+  overflow: hidden; 
+}
+
+.sidebar a {
+  color: #000;
+  transition: background-color 0.2s ease;
+}
+
+/* hover */
+.sidebar a:hover {
+  background-color: rgba(0, 0, 0, 0.10);
+}
+
+/* active */
+.sidebar a.active {
+  background-color: #42a5f5; /* solid, no gradient */
+  /* border-radius: 8px; */
+}
+
+/* sticky sidebar */
+.sidebar-fixed {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+}

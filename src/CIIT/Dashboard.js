@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { Container, Row, Col, Navbar, Nav, Image, NavItem, Button, Modal, ModalTitle, ModalBody, ModalFooter, Form, ModalHeader, FormControl, FormGroup} from "react-bootstrap";
 import { NavLink } from "react-router-dom";
 import { Outlet, useNavigate } from "react-router-dom";
+import "./Dashboard.css";
 
 const Dashboard = () => {
 
@@ -187,10 +188,10 @@ const Dashboard = () => {
     return (
         <Container fluid className="p-0">
 
-            <Row className="g-0">
+            <Row className="g-0 m-0">
 
                 {/* LEFT SIDEBAR */}
-                <Col md={2} className="bg-primary vh-100">
+                <Col md={2} className="bg-primary sidebar-fixed min-vh-100">
 
                     <div className="p-3">
 
@@ -272,14 +273,14 @@ const Dashboard = () => {
                         </div>
 
                         {/* MENU */}
-                        <div className="d-flex flex-column bg-white rounded">
+                        <div className="d-flex flex-column bg-white  sidebar">
 
-                            <NavLink to="" className="text-primary text-decoration-none py-2 px-3 border-bottom">Dashboard</NavLink>
-                            <NavLink to="profile" className="text-primary text-decoration-none py-2 px-3 border-bottom">Profile</NavLink>
-                            <NavLink to="batches" className="text-primary text-decoration-none py-2 px-3 border-bottom">Batches</NavLink>
-                            <NavLink to="payments" className="text-primary text-decoration-none py-2 px-3 border-bottom">Payments</NavLink>
-                            <NavLink to="practice-exams" className="text-primary text-decoration-none py-2 px-3 border-bottom">Practice Exams</NavLink>
-                            <NavLink to="video-tutorial" className="text-primary text-decoration-none py-2 px-3">Video Tutorial</NavLink>
+                            <NavLink to="" end className=" text-decoration-none py-2 px-3 border-bottom">Dashboard</NavLink>
+                            <NavLink to="profile" className=" text-decoration-none py-2 px-3 border-bottom">Profile</NavLink>
+                            <NavLink to="batches" className=" text-decoration-none py-2 px-3 border-bottom">Batches</NavLink>
+                            <NavLink to="payments" className=" text-decoration-none py-2 px-3 border-bottom">Payments</NavLink>
+                            <NavLink to="practice-exams" className=" text-decoration-none py-2 px-3 border-bottom">Practice Exams</NavLink>
+                            <NavLink to="video-tutorial" className=" text-decoration-none py-2 px-3">Video Tutorial</NavLink>
 
                         </div>
 
@@ -287,10 +288,10 @@ const Dashboard = () => {
                 </Col>
 
                 {/* RIGHT CONTENT */}
-                <Col md={10} className="ps-2">
+                <Col md={10}>
 
                     {/* TOP NAVBAR */}
-                    <Navbar bg="primary" variant="dark" expand="lg">
+                    <Navbar bg="primary" variant="dark" expand="lg" className="border-start border-white border-3">
                         <Container fluid>
 
                             <Navbar.Brand>
@@ -308,7 +309,7 @@ const Dashboard = () => {
                     </Navbar>
 
                     {/* MAIN CONTENT AREA */}
-                    <div style={{padding:"10px"}}>
+                    <div className="p-3">
                         <Outlet/>
                     </div>
 
